@@ -1,76 +1,112 @@
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.requests import Request
-from fastapi.templating import Jinja2Templates
 from starlette.middleware.sessions import SessionMiddleware
-
-from database import engine, SessionLocal
-from models import Base, Pedido
-
-# =========================
-# CREAR TABLAS
-# =========================
-
-Base.metadata.create_all(bind=engine)
-
-# =========================
-# APP
-# =========================
 
 app = FastAPI()
 
-# =========================
 # SESIONES
-# =========================
-
 app.add_middleware(
     SessionMiddleware,
     secret_key="supersecretkey"
 )
 
-# =========================
-# TEMPLATES
-# =========================
-
-templates = Jinja2Templates(directory="templates")
-
-# =========================
-# PEDIDOS TEMPORALES
-# =========================
-
+# PEDIDOS
 pedidos = {
-
-    "1001": {
-        "cliente": "Juan Perez",
-        "estado": "Preparando"
-    },
-
-    "1002": {
-        "cliente": "Maria Lopez",
-        "estado": "En tránsito"
-    },
-
-    "1003": {
-        "cliente": "Carlos Ruiz",
-        "estado": "Listo para recoger"
+    "488304882948831-VLID": {
+        "cliente": "KAM KAM ANGEL",
+        "estado": "En preparación"
     }
-
 }
 
 # =========================
-# LOGIN PAGE
-# =========================
-
-@app.get("/login")
-def login_page(request: Request):
-
-    return templates.TemplateResponse(
-        request=request,
-        name="login.html"
-    )
-# =========================
 # LOGIN
 # =========================
+
+@app.get("/login", response_class=HTMLResponse)
+def login_page():
+
+    return """
+
+<html>
+
+<head>
+<title>Login Admin</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body style="
+background:#0b0b0b;
+font-family:Arial;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+">
+
+<div style="
+background:#151515;
+padding:40px;
+border-radius:20px;
+width:300px;
+text-align:center;
+">
+
+<h1>🔒 Admin</h1>
+
+<form action="/login" method="post">
+
+<input
+type="text"
+name="username"
+placeholder="Usuario"
+style="
+width:100%;
+padding:15px;
+margin-top:15px;
+border:none;
+border-radius:10px;
+"
+>
+
+<input
+type="password"
+name="password"
+placeholder="Contraseña"
+style="
+width:100%;
+padding:15px;
+margin-top:15px;
+border:none;
+border-radius:10px;
+"
+>
+
+<button
+style="
+margin-top:20px;
+width:100%;
+padding:15px;
+background:#00d000;
+color:black;
+font-weight:bold;
+border:none;
+border-radius:10px;
+cursor:pointer;
+"
+>
+Entrar
+</button>
+
+</form>
+
+</div>
+
+</body>
+
+</html>
+
+"""
 
 @app.post("/login")
 def login(
@@ -89,26 +125,9 @@ def login(
         )
 
     return HTMLResponse("""
-
-    <h1>❌ Usuario o contraseña incorrectos</h1>
-
+    <h1>❌ Login incorrecto</h1>
     <a href="/login">Volver</a>
-
     """)
-
-# =========================
-# LOGOUT
-# =========================
-
-@app.get("/logout")
-def logout(request: Request):
-
-    request.session.clear()
-
-    return RedirectResponse(
-        url="/login",
-        status_code=303
-    )
 
 # =========================
 # HOME
@@ -123,79 +142,117 @@ def inicio():
 
 <head>
 
-    <title>P TRACKER</title>
+<title>GOSHOP</title>
 
-    <style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body{
-            font-family:Arial;
-            background:#f2f2f2;
-            padding:50px;
-        }
+<style>
 
-        .box{
-            background:white;
-            width:400px;
-            margin:auto;
-            padding:30px;
-            border-radius:15px;
-            box-shadow:0 0 15px rgba(0,0,0,0.1);
-            text-align:center;
-        }
+body{
+    background:#001500;
+    font-family:Arial;
+    color:white;
+    margin:0;
+    padding:20px;
+}
 
-        input{
-            width:90%;
-            padding:12px;
-            font-size:18px;
-            margin-top:20px;
-            border-radius:10px;
-            border:1px solid #ccc;
-        }
+.logo{
+    text-align:center;
+    margin-top:30px;
+}
 
-        button{
-            margin-top:20px;
-            padding:12px 25px;
-            background:#007bff;
-            color:white;
-            border:none;
-            border-radius:10px;
-            font-size:18px;
-            cursor:pointer;
-        }
+.logo h1{
+    font-size:60px;
+    margin:0;
+    font-weight:bold;
+}
 
-    </style>
+.logo h2{
+    color:#00ff2a;
+    margin-top:10px;
+    letter-spacing:5px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#bdbdbd;
+    margin-top:20px;
+    font-size:22px;
+}
+
+.search-box{
+    display:flex;
+    gap:10px;
+    margin-top:40px;
+}
+
+.search-box input{
+    flex:1;
+    padding:20px;
+    border-radius:20px;
+    border:1px solid #333;
+    background:#0c0c0c;
+    color:white;
+    font-size:22px;
+}
+
+.search-box button{
+    width:160px;
+    border:none;
+    border-radius:20px;
+    background:#00e000;
+    color:black;
+    font-size:25px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.admin-btn{
+    display:block;
+    text-align:center;
+    margin-top:30px;
+    color:#00ff2a;
+    text-decoration:none;
+    font-size:20px;
+}
+
+</style>
 
 </head>
 
 <body>
 
-    <div class="box">
+<div class="logo">
 
-        <h1>📦 P TRACKER</h1>
+<h1>GOSHOP</h1>
+<h2>TRACKING STATE</h2>
 
-        <form action="/buscar">
+</div>
 
-            <input
-                type="text"
-                name="codigo"
-                placeholder="Ingrese código"
-            >
+<div class="subtitle">
+Ingresa tu número de pedido para ver el estado en tiempo real.
+</div>
 
-            <br>
+<form action="/buscar">
 
-            <button type="submit">
-                Buscar Pedido
-            </button>
+<div class="search-box">
 
-        </form>
+<input
+name="codigo"
+placeholder="Ingresa tu código"
+>
 
-        <br><br>
+<button type="submit">
+Buscar
+</button>
 
-        <a href="/login">
-            🔐 Panel Admin
-        </a>
+</div>
 
-    </div>
+</form>
+
+<a class="admin-btn" href="/login">
+⚙️ Panel Admin
+</a>
 
 </body>
 
@@ -204,168 +261,118 @@ def inicio():
 """
 
 # =========================
-# BUSCAR PEDIDO
+# BUSCAR
 # =========================
 
 @app.get("/buscar", response_class=HTMLResponse)
 def buscar(codigo: str):
 
-    if codigo in pedidos:
+    if codigo not in pedidos:
 
-        pedido = pedidos[codigo]
+        return """
 
-        color = "orange"
-
-        if pedido["estado"] == "En tránsito":
-            color = "blue"
-
-        if pedido["estado"] == "Listo para recoger":
-            color = "green"
-
-        if pedido["estado"] == "Despachado":
-            color = "gray"
-
-        return f"""
-
-<html>
-
-<body style="font-family:Arial;background:#f2f2f2;padding:50px;">
-
-    <div style="
-        background:white;
-        width:450px;
-        margin:auto;
-        padding:30px;
-        border-radius:15px;
-    ">
-
-        <h1>📦 Pedido</h1>
-
-        <p><b>Código:</b> {codigo}</p>
-
-        <p><b>Cliente:</b> {pedido['cliente']}</p>
-
-        <p style="
-            color:{color};
-            font-size:28px;
-            font-weight:bold;
-        ">
-            {pedido['estado']}
-        </p>
-
-        <a href="/">← Volver</a>
-
-    </div>
-
-</body>
-
-</html>
-
-"""
-
-    return """
+<body style='background:black;color:white;font-family:Arial;padding:40px;'>
 
 <h1>❌ Pedido no encontrado</h1>
 
-<a href="/">← Volver</a>
+<a href="/" style="color:#00ff2a;">
+← Volver
+</a>
+
+</body>
 
 """
 
-# =========================
-# NUEVO PEDIDO
-# =========================
+    pedido = pedidos[codigo]
 
-@app.get("/nuevo", response_class=HTMLResponse)
-def nuevo_pedido(request: Request):
-
-    if not request.session.get("admin"):
-
-        return RedirectResponse(
-            url="/login",
-            status_code=303
-        )
-
-    return """
+    return f"""
 
 <html>
 
-<body style="font-family:Arial;padding:40px;">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
 
-    <h1>➕ Nuevo Pedido</h1>
+<body style="
+background:#001500;
+font-family:Arial;
+color:white;
+padding:20px;
+">
 
-    <form action="/guardar" method="post">
+<div style="
+background:#002900;
+border-radius:30px;
+overflow:hidden;
+border:2px solid #00aa00;
+">
 
-        <input
-            type="text"
-            name="codigo"
-            placeholder="Código"
-        >
+<div style="
+background:#00d000;
+color:black;
+padding:30px;
+">
 
-        <br><br>
+<h1>Pedido #{codigo}</h1>
+<h2>{pedido['cliente']}</h2>
 
-        <input
-            type="text"
-            name="cliente"
-            placeholder="Cliente"
-        >
+</div>
 
-        <br><br>
+<div style="padding:30px;">
 
-        <button type="submit">
-            Guardar Pedido
-        </button>
+<div style="margin-bottom:40px;">
+<h2 style="color:#00ff2a;">✔ En validación</h2>
+<p>Revisando tu pedido</p>
+</div>
 
-    </form>
+<div style="margin-bottom:40px;">
+<h2 style="color:#00ff2a;">✔ Validado</h2>
+<p>Pedido confirmado</p>
+</div>
 
-    <br>
+<div style="margin-bottom:40px;">
+<h2 style="color:#00ff2a;">⦿ {pedido['estado']}</h2>
+<p>Preparando tu pedido</p>
 
-    <a href="/admin">← Volver</a>
+<div style="
+background:#00ff2a;
+color:black;
+padding:10px 20px;
+border-radius:30px;
+display:inline-block;
+font-weight:bold;
+margin-top:10px;
+">
+Estado actual
+</div>
+
+</div>
+
+<div style="opacity:0.4;margin-bottom:40px;">
+<h2>Enviado por agencia</h2>
+<p>Ya lo dejamos en agencia</p>
+</div>
+
+<div style="opacity:0.4;">
+<h2>Entregado</h2>
+<p>Pedido recibido con éxito</p>
+</div>
+
+</div>
+
+</div>
+
+<br>
+
+<a href="/" style="color:#00ff2a;">
+← Buscar otro pedido
+</a>
 
 </body>
 
 </html>
 
 """
-
-# =========================
-# GUARDAR PEDIDO
-# =========================
-
-@app.post("/guardar")
-def guardar(
-    request: Request,
-    codigo: str = Form(...),
-    cliente: str = Form(...)
-):
-
-    if not request.session.get("admin"):
-
-        return RedirectResponse(
-            url="/login",
-            status_code=303
-        )
-
-    pedidos[codigo] = {
-        "cliente": cliente,
-        "estado": "Preparando"
-    }
-
-    db = SessionLocal()
-
-    nuevo = Pedido(
-        codigo=codigo,
-        cliente=cliente,
-        estado="Preparando"
-    )
-
-    db.add(nuevo)
-    db.commit()
-    db.close()
-
-    return RedirectResponse(
-        url="/admin",
-        status_code=303
-    )
 
 # =========================
 # PANEL ADMIN
@@ -383,64 +390,37 @@ def admin(request: Request):
 
     html = """
 
-<html>
+<body style='background:#001500;font-family:Arial;color:white;padding:30px;'>
 
-<head>
+<h1>⚙️ PANEL ADMIN</h1>
 
-    <title>Admin</title>
+<form action='/crear' method='post'>
 
-    <style>
+<input
+name='codigo'
+placeholder='Código'
+style='padding:15px;border-radius:10px;border:none;'
+>
 
-        body{
-            font-family:Arial;
-            background:#f2f2f2;
-            padding:40px;
-        }
+<input
+name='cliente'
+placeholder='Cliente'
+style='padding:15px;border-radius:10px;border:none;'
+>
 
-        .card{
-            background:white;
-            padding:20px;
-            margin-bottom:20px;
-            border-radius:10px;
-        }
+<button style='
+padding:15px;
+background:#00d000;
+border:none;
+border-radius:10px;
+font-weight:bold;
+'>
+Crear Pedido
+</button>
 
-        select{
-            padding:10px;
-            font-size:16px;
-        }
+</form>
 
-        button{
-            padding:10px 20px;
-            color:white;
-            border:none;
-            border-radius:5px;
-            cursor:pointer;
-            margin-top:10px;
-        }
-
-        .green{
-            background:green;
-        }
-
-        .red{
-            background:red;
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-    <h1>⚙️ Panel Administrador</h1>
-
-    <a href="/nuevo">➕ Crear Pedido</a>
-
-    <br><br>
-
-    <a href="/logout">🚪 Cerrar Sesión</a>
-
-    <hr>
+<hr>
 
 """
 
@@ -448,64 +428,109 @@ def admin(request: Request):
 
         html += f"""
 
-    <div class="card">
+<div style='
+background:#002900;
+padding:20px;
+margin-top:20px;
+border-radius:20px;
+'>
 
-        <h2>Pedido {codigo}</h2>
+<h2>{codigo}</h2>
 
-        <p><b>Cliente:</b> {pedido['cliente']}</p>
+<p>{pedido['cliente']}</p>
 
-        <p><b>Estado actual:</b> {pedido['estado']}</p>
+<p>{pedido['estado']}</p>
 
-        <form action="/actualizar" method="post">
+<form action='/actualizar' method='post'>
 
-            <input type="hidden" name="codigo" value="{codigo}">
+<input type='hidden' name='codigo' value='{codigo}'>
 
-            <select name="estado">
+<select
+name='estado'
+style='padding:10px;border-radius:10px;'
+>
+<option>En preparación</option>
+<option>Enviado por agencia</option>
+<option>Entregado</option>
+</select>
 
-                <option>Preparando</option>
+<button style='
+padding:10px;
+background:#00d000;
+border:none;
+border-radius:10px;
+margin-left:10px;
+'>
+Actualizar
+</button>
 
-                <option>En tránsito</option>
+</form>
 
-                <option>Listo para recoger</option>
+<form action='/eliminar' method='post'>
 
-                <option>Despachado</option>
+<input type='hidden' name='codigo' value='{codigo}'>
 
-            </select>
+<button style='
+background:red;
+color:white;
+margin-top:10px;
+padding:10px;
+border:none;
+border-radius:10px;
+'>
+Eliminar
+</button>
 
-            <br>
+</form>
 
-            <button class="green" type="submit">
-                Actualizar
-            </button>
-
-        </form>
-
-        <form action="/borrar" method="post">
-
-            <input type="hidden" name="codigo" value="{codigo}">
-
-            <button class="red" type="submit">
-                🗑️ Borrar Pedido
-            </button>
-
-        </form>
-
-    </div>
+</div>
 
 """
 
     html += """
 
-</body>
+<br><br>
 
-</html>
+<a href='/logout' style='color:red;font-size:20px;'>
+Cerrar sesión
+</a>
+
+</body>
 
 """
 
     return html
 
 # =========================
-# ACTUALIZAR PEDIDO
+# CREAR PEDIDO
+# =========================
+
+@app.post("/crear")
+def crear(
+    request: Request,
+    codigo: str = Form(...),
+    cliente: str = Form(...)
+):
+
+    if not request.session.get("admin"):
+
+        return RedirectResponse(
+            url="/login",
+            status_code=303
+        )
+
+    pedidos[codigo] = {
+        "cliente": cliente,
+        "estado": "En preparación"
+    }
+
+    return RedirectResponse(
+        url="/admin",
+        status_code=303
+    )
+
+# =========================
+# ACTUALIZAR
 # =========================
 
 @app.post("/actualizar")
@@ -530,11 +555,11 @@ def actualizar(
     )
 
 # =========================
-# BORRAR PEDIDO
+# ELIMINAR
 # =========================
 
-@app.post("/borrar")
-def borrar(
+@app.post("/eliminar")
+def eliminar(
     request: Request,
     codigo: str = Form(...)
 ):
@@ -551,5 +576,19 @@ def borrar(
 
     return RedirectResponse(
         url="/admin",
+        status_code=303
+    )
+
+# =========================
+# LOGOUT
+# =========================
+
+@app.get("/logout")
+def logout(request: Request):
+
+    request.session.clear()
+
+    return RedirectResponse(
+        url="/",
         status_code=303
     )
