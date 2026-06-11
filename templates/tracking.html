@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Shop - Tracking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:Inter,sans-serif; background:linear-gradient(135deg, #667eea, #764ba2); min-height:100vh; padding:30px 20px; }
+        .container { max-width:600px; margin:0 auto; }
+        .header { background:rgba(255,255,255,0.95); border-radius:20px; padding:35px 30px; text-align:center; margin-bottom:25px; box-shadow:0 10px 40px rgba(0,0,0,0.1); animation:slideDown 0.6s ease; }
+        @keyframes slideDown { from { opacity:0; transform:translateY(-30px); } to { opacity:1; transform:translateY(0); } }
+        .header .icon { font-size:50px; margin-bottom:10px; animation:bounce 2s infinite; }
+        @keyframes bounce { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
+        .header h1 { font-size:24px; font-weight:800; color:#1e293b; }
+        .header .cliente { font-size:16px; color:#64748b; margin-top:5px; }
+        .header .badge { display:inline-block; background:linear-gradient(135deg,#667eea,#764ba2); color:#fff; padding:6px 16px; border-radius:20px; font-size:12px; font-weight:600; margin-top:10px; }
+        .steps-card { background:rgba(255,255,255,0.95); border-radius:20px; padding:20px 0; box-shadow:0 10px 40px rgba(0,0,0,0.1); }
+        .step { display:flex; align-items:center; padding:15px 25px; position:relative; animation:fadeIn 0.5s ease forwards; opacity:0; }
+        .step:nth-child(1) { animation-delay:0.1s; } .step:nth-child(2) { animation-delay:0.3s; } .step:nth-child(3) { animation-delay:0.5s; } .step:nth-child(4) { animation-delay:0.7s; }
+        @keyframes fadeIn { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:translateX(0); } }
+        .step-circle { width:55px; height:55px; min-width:55px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; background:#f1f5f9; transition:all 0.5s; z-index:2; }
+        .step.completed .step-circle { background:linear-gradient(135deg,#667eea,#764ba2); transform:scale(1.1); }
+        .step.active .step-circle { background:linear-gradient(135deg,#10b981,#059669); box-shadow:0 0 0 8px rgba(16,185,129,0.2); }
+        .step.pulse .step-circle { animation:pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100% { box-shadow:0 0 0 8px rgba(16,185,129,0.2); } 50% { box-shadow:0 0 0 20px rgba(16,185,129,0); } }
+        .step-info { margin-left:15px; }
+        .step-info h4 { font-size:15px; font-weight:700; color:#94a3b8; }
+        .step.completed .step-info h4, .step.active .step-info h4 { color:#1e293b; }
+        .step-info p { font-size:12px; color:#cbd5e1; }
+        .step.completed .step-info p, .step.active .step-info p { color:#64748b; }
+        .badge-actual { display:inline-block; background:#10b981; color:#fff; padding:2px 10px; border-radius:8px; font-size:10px; font-weight:600; margin-top:4px; }
+        .connector { position:absolute; left:52px; top:70px; width:3px; height:40px; background:#e2e8f0; z-index:1; }
+        .connector.bar-completed { background:linear-gradient(#667eea,#764ba2); }
+        .connector.bar-active { background:linear-gradient(#10b981,#667eea); animation:glow 1.5s infinite; }
+        @keyframes glow { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+        .confirm-section { text-align:center; margin-top:25px; }
+        .btn-confirm { padding:16px 40px; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; border-radius:30px; font-size:16px; font-weight:700; cursor:pointer; box-shadow:0 8px 30px rgba(16,185,129,0.4); font-family:Inter,sans-serif; }
+        .btn-confirm:hover { transform:translateY(-3px); }
+        .confirm-hint { font-size:12px; color:#94a3b8; margin-top:8px; }
+        .confirmed-msg { background:#d1fae5; color:#065f46; padding:20px; border-radius:15px; font-size:18px; font-weight:700; }
+        .footer { text-align:center; margin-top:25px; }
+        .footer a { color:#fff; text-decoration:none; font-size:14px; opacity:0.8; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="icon">📦</div>
+        <h1>Pedido #{{CODIGO}}</h1>
+        <p class="cliente">{{CLIENTE}}</p>
+        <span class="badge">{{TIPO}} - {{DESTINO}}</span>
+    </div>
+    <div class="steps-card">{{STEPS}}</div>
+    <!--CONFIRMAR-->
+    <div class="footer"><a href="/">Buscar otro pedido</a></div>
+</div>
+<!--WS_SCRIPT-->
+</body>
+</html>

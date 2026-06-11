@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html lang='es'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <title>GoShop - Registro</title>
+    <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap' rel='stylesheet'>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { background: linear-gradient(135deg, #0a0f0a, #0d1a0d); font-family:'Poppins',sans-serif; color:#fff; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
+        .card { background:rgba(0,255,102,0.03); border:1px solid rgba(0,255,102,0.15); border-radius:20px; padding:35px 30px; width:100%; max-width:420px; }
+        h1 { font-size:22px; text-align:center; margin-bottom:5px; }
+        .sub { color:#888; text-align:center; font-size:13px; margin-bottom:25px; }
+        input { width:100%; padding:12px 16px; margin-bottom:14px; border-radius:10px; border:2px solid rgba(0,255,102,0.12); background:rgba(0,0,0,0.3); color:#fff; font-family:'Poppins',sans-serif; font-size:14px; outline:none; transition:all 0.3s; }
+        input:focus { border-color:#00ff66; }
+        button { width:100%; padding:14px; border:none; border-radius:10px; background:linear-gradient(135deg,#00ff66,#00cc44); color:#000; font-weight:600; font-size:15px; cursor:pointer; transition:all 0.3s; }
+        button:hover { box-shadow:0 8px 25px rgba(0,255,102,0.3); }
+        .link { text-align:center; margin-top:15px; }
+        .link a { color:#00ff66; font-size:13px; }
+    </style>
+</head>
+<body>
+    <div class='card'>
+        <h1>Crear Cuenta</h1>
+        <p class='sub'>Registrate para seguir tus pedidos</p>
+        <form method='post'>
+            <input type='text' name='nombre' placeholder='Nombre completo' required>
+            <input type='email' name='email' placeholder='Correo electronico' required>
+            <input type='password' name='password' placeholder='Contrasena' required>
+            <input type='text' name='telefono' placeholder='Telefono (opcional)'>
+            <button type='submit'>Registrarse</button>
+        </form>
+        <div class='link'><a href='/login'>Ya tengo cuenta</a></div>
+    </div>
+</body>
+</html>

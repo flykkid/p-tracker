@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Shop - Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:Inter,sans-serif; background:#f1f5f9; color:#1e293b; display:flex; }
+        .sidebar { width:240px; background:#fff; border-right:1px solid #e2e8f0; position:fixed; height:100vh; padding:20px 0; }
+        .sidebar h2 { padding:0 20px 15px; font-size:20px; font-weight:800; color:#1a56db; border-bottom:1px solid #e2e8f0; }
+        .sidebar a { display:block; padding:12px 20px; color:#64748b; text-decoration:none; font-size:13px; font-weight:500; border-left:3px solid transparent; }
+        .sidebar a:hover, .sidebar a.active { background:#f1f5f9; color:#1a56db; border-left-color:#1a56db; }
+        .main { margin-left:240px; flex:1; padding:30px; }
+        .top { margin-bottom:25px; } .top h1 { font-size:24px; font-weight:700; }
+        .tabs { display:flex; gap:5px; margin-bottom:20px; background:#fff; border-radius:12px; padding:5px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+        .tab { padding:10px 20px; border:none; background:transparent; font-family:Inter,sans-serif; font-size:13px; font-weight:500; cursor:pointer; border-radius:8px; color:#64748b; }
+        .tab.active { background:#1a56db; color:#fff; }
+        .panel { display:none; } .panel.active { display:block; }
+        .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px; margin-bottom:20px; }
+        .stat { background:#fff; border-radius:10px; padding:16px; box-shadow:0 1px 2px rgba(0,0,0,0.03); }
+        .stat .val { font-size:26px; font-weight:700; color:#1a56db; } .stat .lbl { font-size:10px; color:#94a3b8; margin-top:2px; }
+        .card { background:#fff; border-radius:12px; padding:20px; margin-bottom:20px; box-shadow:0 1px 3px rgba(0,0,0,0.04); }
+        .card h3 { font-size:15px; font-weight:700; margin-bottom:15px; }
+        .form-r { display:flex; gap:8px; flex-wrap:wrap; }
+        input, select { flex:1; min-width:120px; padding:9px 11px; border:2px solid #e2e8f0; border-radius:8px; font-size:12px; font-family:Inter,sans-serif; outline:none; }
+        input:focus, select:focus { border-color:#1a56db; }
+        button { padding:9px 16px; border:none; border-radius:8px; font-weight:600; font-family:Inter,sans-serif; cursor:pointer; font-size:12px; }
+        .btn-p { background:#1a56db; color:#fff; } .btn-p:hover { background:#1e40af; }
+        .btn-o { background:transparent; border:2px solid #1a56db; color:#1a56db; }
+        .btn-sm { padding:4px 8px; font-size:10px; } .sel-sm { padding:4px 6px; font-size:10px; border-radius:5px; }
+        table { width:100%; border-collapse:collapse; }
+        th { text-align:left; padding:10px; background:#f8fafc; font-size:10px; font-weight:600; color:#64748b; text-transform:uppercase; }
+        td { padding:10px; border-bottom:1px solid #f1f5f9; font-size:12px; }
+        .estado { padding:3px 8px; border-radius:10px; font-size:10px; font-weight:600; }
+        .e-validado { background:#fef9c3; color:#a16207; } .e-alistado { background:#dbeafe; color:#1d4ed8; }
+        .e-transito { background:#ffedd5; color:#c2410c; } .e-destino { background:#d1fae5; color:#065f46; }
+        .empty { text-align:center; padding:25px; color:#94a3b8; }
+    </style>
+</head>
+<body>
+<aside class="sidebar">
+    <h2>Go Shop</h2>
+    <a href="#" class="active" onclick="showTab('dashboard')">Dashboard</a>
+    <a href="#" onclick="showTab('pedidos')">Pedidos</a>
+    <a href="#" onclick="showTab('clientes')">Clientes</a>
+    <a href="#" onclick="showTab('historial')">Historial</a>
+    <a href="/logout" style="color:#dc2626;">Salir</a>
+</aside>
+<main class="main">
+    <div class="top"><h1>Panel de Administracion</h1></div>
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('dashboard')">Dashboard</button>
+        <button class="tab" onclick="showTab('pedidos')">Pedidos</button>
+        <button class="tab" onclick="showTab('clientes')">Clientes</button>
+        <button class="tab" onclick="showTab('historial')">Historial</button>
+    </div>
+    <div id="dashboard" class="panel active">
+        <div class="stats">
+            <div class="stat"><div class="val">{TOTAL}</div><div class="lbl">Activos</div></div>
+            <div class="stat"><div class="val">{VALIDADOS}</div><div class="lbl">Validados</div></div>
+            <div class="stat"><div class="val">{ALISTADOS}</div><div class="lbl">Alistados</div></div>
+            <div class="stat"><div class="val">{EN_TRANSITO}</div><div class="lbl">En transito</div></div>
+            <div class="stat"><div class="val">{EN_DESTINO}</div><div class="lbl">En destino</div></div>
+            <div class="stat"><div class="val">{LIMA}</div><div class="lbl">Lima</div></div>
+            <div class="stat"><div class="val">{AGENCIA}</div><div class="lbl">Agencia</div></div>
+            <div class="stat"><div class="val">{CONFIRMADOS_HOY}</div><div class="lbl">Hoy</div></div>
+        </div>
+    </div>
+    <div id="pedidos" class="panel">
+        <div class="card"><h3>Crear Pedido</h3>
+            <form action="/crear" method="post" class="form-r">
+                <input name="codigo" placeholder="Codigo" required>
+                <input name="cliente" placeholder="Cliente" required>
+                <select name="tipo_envio" onchange="document.getElementById('dests').innerHTML=this.value=='Lima'?'<option>San Luis</option><option>Tda Geraldine</option>':'<option>Agencia</option>'">
+                    <option value="Lima">Lima</option><option value="Agencia">Agencia</option>
+                </select>
+                <select name="destino" id="dests"><option>San Luis</option><option>Tda Geraldine</option></select>
+                <select name="cliente_id"><option value="">Sin cuenta</option>{CLIENTES_OPTIONS}</select>
+                <button class="btn-p">Crear</button>
+            </form>
+        </div>
+        <div class="card"><h3>Pedidos Activos</h3>
+            <table><thead><tr><th>Codigo</th><th>Cliente</th><th>Tipo</th><th>Destino</th><th>Estado</th><th>Accion</th></tr></thead><tbody>{PEDIDOS_ROWS}</tbody></table>
+        </div>
+    </div>
+    <div id="clientes" class="panel">
+        <div class="card"><h3>Crear Cliente</h3>
+            <form action="/admin/crear-cliente" method="post" class="form-r">
+                <input name="nombre" placeholder="Nombre" required>
+                <input name="email" placeholder="Email" required>
+                <input name="password" placeholder="Contrasena" required>
+                <input name="telefono" placeholder="Telefono">
+                <button class="btn-p">Crear</button>
+            </form>
+        </div>
+        <div class="card"><h3>Clientes Registrados</h3>
+            <table><thead><tr><th>Nombre</th><th>Email</th><th>Telefono</th></tr></thead><tbody>{CLIENTES_ROWS}</tbody></table>
+        </div>
+    </div>
+    <div id="historial" class="panel">
+        <div class="card"><h3>Entregas Confirmadas</h3>
+            <table><thead><tr><th>Pedido</th><th>Cliente</th><th>Tipo</th><th>Destino</th><th>Fecha</th></tr></thead><tbody>{HISTORIAL_ROWS}</tbody></table>
+        </div>
+    </div>
+</main>
+<script>
+function showTab(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(name).classList.add('active');
+    event.target.classList.add('active');
+}
+var ws = new WebSocket('ws://127.0.0.1:8000/ws-admin');
+ws.onmessage = function(e) { var d = JSON.parse(e.data); if(d.tipo === 'recargar') location.reload(); };
+</script>
+</body>
+</html>

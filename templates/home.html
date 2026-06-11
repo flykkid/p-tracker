@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Shop - Rastreo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:Inter,sans-serif; background:linear-gradient(180deg, #f0f4f8, #e8edf3); min-height:100vh; }
+        .navbar { background:#fff; padding:16px 40px; display:flex; align-items:center; justify-content:space-between; box-shadow:0 1px 3px rgba(0,0,0,0.05); }
+        .logo { font-size:22px; font-weight:800; color:#1a56db; }
+        .nav-link { color:#64748b; text-decoration:none; font-size:14px; font-weight:500; }
+        .nav-link:hover { color:#1a56db; }
+        .hero { text-align:center; padding:80px 20px 40px; }
+        .hero h1 { font-size:48px; font-weight:800; color:#0f172a; margin-bottom:12px; }
+        .hero p { font-size:18px; color:#64748b; margin-bottom:40px; }
+        .tracking-box { background:#fff; border-radius:20px; padding:30px; max-width:600px; margin:0 auto; box-shadow:0 4px 24px rgba(0,0,0,0.06); }
+        .tracking-box h3 { font-size:16px; font-weight:600; color:#1e293b; margin-bottom:20px; }
+        .input-row { display:flex; gap:12px; }
+        input { flex:1; padding:16px 20px; border:2px solid #e2e8f0; border-radius:14px; font-size:16px; font-family:Inter,sans-serif; outline:none; }
+        input:focus { border-color:#1a56db; }
+        button { padding:16px 32px; background:#1a56db; color:#fff; border:none; border-radius:14px; font-size:16px; font-weight:600; cursor:pointer; white-space:nowrap; }
+        button:hover { background:#1e40af; }
+        footer { text-align:center; padding:30px; color:#94a3b8; font-size:13px; margin-top:40px; }
+        @media (max-width:600px) { .hero h1 { font-size:32px; } .input-row { flex-direction:column; } button { width:100%; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar"><div class="logo">Go Shop Tracking</div><a href="/login" class="nav-link">Acceso Empresas</a></nav>
+    <div class="hero">
+        <h1>Rastrea tu envio</h1>
+        <p>Ingresa tu numero de seguimiento</p>
+        <div class="tracking-box">
+            <h3>Numero de seguimiento</h3>
+            <form action="/buscar">
+                <div class="input-row">
+                    <input type="text" name="codigo" placeholder="Ej: GS-2024-001" required>
+                    <button type="submit">Rastrear</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <footer>Go Shop Logistics. Todos los derechos reservados.</footer>
+</body>
+</html>
